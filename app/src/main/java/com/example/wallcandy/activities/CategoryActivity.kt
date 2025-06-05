@@ -2,6 +2,7 @@ package com.example.wallcandy.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -50,15 +51,29 @@ class CategoryActivity : AppCompatActivity() {
 
         viewModel = ViewModelProvider(this, ViewModelFactory(wallpaperRepository))[SearchViewModel::class.java]
         viewModel.searchedWallpapers.observe(this, Observer{
+            if(it.isNotEmpty()){
+                bind!!.initialLoader.visibility = View.GONE
+                bind!!.contentLayout.visibility = View.VISIBLE
+            }
             searchAdapter.differ.submitList(it)
+
+            bind!!.loadMoreSpinner.visibility = View.GONE
+            bind!!.loadMoreButton.visibility = View.VISIBLE
         })
 
-        viewModel.getSearchedWallpapers(category, 1, 50)
+        viewModel.getSearchedWallpapers(category)
     }
 
     private fun setupListeners(){
         bind!!.btnBack.setOnClickListener {
             finish()
+        }
+
+        bind!!.loadMoreButton.setOnClickListener {
+            bind!!.loadMoreButton.visibility = View.GONE
+            bind!!.loadMoreSpinner.visibility = View.VISIBLE
+
+            viewModel.getSearchedWallpapers(category)
         }
     }
 

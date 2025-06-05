@@ -1,5 +1,6 @@
 package com.example.wallcandy.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.wallcandy.api.WallpaperApiService
@@ -26,48 +27,45 @@ class WallpaperRepository(private val apiService: WallpaperApiService) {
     suspend fun getTrendingWallpapers(page: Int, per_page: Int) {
         try {
             val result = apiService.getTrendingWallpapers(page, per_page)
-            if(result.isSuccessful) {
-                if (result?.body() != null)
-                    trendingWallpapersLiveData.postValue(result.body()!!.photos)
-            }
-            else{
+            if (result.isSuccessful && result.body() != null) {
+                val newWallpapers = result.body()!!.photos
+                val current = trendingWallpapersLiveData.value ?: emptyList()
+                trendingWallpapersLiveData.postValue(current + newWallpapers)
+            } else {
 
             }
-        }
-        catch (e : Exception){
-
+        } catch (e: Exception) {
+            Log.e("API_DEBUG", "Exception during API call: ${e.message}", e)
         }
     }
 
     suspend fun getRandomWallpapers(page: Int, per_page: Int) {
         try {
             val result = apiService.getRandomWallpapers(page, per_page)
-            if(result.isSuccessful) {
-                if (result?.body() != null)
-                    randomWallpapersLiveData.postValue(result.body()!!.photos)
-            }
-            else{
+            if (result.isSuccessful && result.body() != null) {
+                val newWallpapers = result.body()!!.photos
+                val current = randomWallpapersLiveData.value ?: emptyList()
+                randomWallpapersLiveData.postValue(current + newWallpapers)
+            } else {
 
             }
-        }
-        catch (e : Exception){
-
+        } catch (e: Exception) {
+            Log.e("API_DEBUG", "Exception during API call: ${e.message}", e)
         }
     }
 
     suspend fun getSearchedWallpapers(query: String, page: Int, per_page: Int) {
         try {
             val result = apiService.getSearchedWallpapers(query, page, per_page)
-            if(result.isSuccessful) {
-                if (result?.body() != null)
-                    searchedWallpapersLiveData.postValue(result.body()!!.photos)
-            }
-            else{
+            if (result.isSuccessful && result.body() != null) {
+                val newWallpapers = result.body()!!.photos
+                val current = searchedWallpapersLiveData.value ?: emptyList()
+                searchedWallpapersLiveData.postValue(current + newWallpapers)
+            } else {
 
             }
-        }
-        catch (e : Exception){
-
+        } catch (e: Exception) {
+            Log.e("API_DEBUG", "Exception during API call: ${e.message}", e)
         }
     }
 
@@ -77,7 +75,7 @@ class WallpaperRepository(private val apiService: WallpaperApiService) {
             val wallpapers = mutableListOf<Wallpaper>()
             for (query in queries) {
                 val result = apiService.getSearchedWallpapers(query, page, per_page)
-                if(result.isSuccessful) {
+                if (result.isSuccessful) {
                     if (result?.body() != null) {
                         wallpapers.add(result.body()!!.photos[0])
                         // Use withContext to ensure that updates happen on the main thread
@@ -85,18 +83,16 @@ class WallpaperRepository(private val apiService: WallpaperApiService) {
                             categoryWallpapersLiveData.value = ArrayList(wallpapers)
                         }
                     }
-                }
-                else{
+                } else {
 
                 }
             }
-        }
-        catch (e : Exception){
-
+        } catch (e: Exception) {
+            Log.e("API_DEBUG", "Exception during API call: ${e.message}", e)
         }
     }
 
-    fun clearSearchResults(){
-        searchedWallpapersLiveData.postValue(emptyList())
+    fun clearSearchResults() {
+        searchedWallpapersLiveData.value = emptyList()
     }
 }

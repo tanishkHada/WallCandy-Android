@@ -2,6 +2,7 @@ package com.example.wallcandy.api
 
 import com.example.wallcandy.utilities.MyConstants
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -20,7 +21,12 @@ object RetrofitHelper {
     }
 
     private fun buildRetrofit(): Retrofit {
+        val logging = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+
         val client = OkHttpClient.Builder()
+            .addInterceptor(logging)
             .addInterceptor { chain ->
                 val request = chain.request().newBuilder()
                     .addHeader("Authorization", MyConstants.API_KEY)

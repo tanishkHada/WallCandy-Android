@@ -46,6 +46,7 @@ class SearchActivity : AppCompatActivity() {
         bind!!.recyclerView.apply {
             layoutManager = StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL)
             adapter = searchAdapter
+            itemAnimator = null
         }
     }
 
@@ -55,6 +56,14 @@ class SearchActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, ViewModelFactory(wallpaperRepository))[SearchViewModel::class.java]
         viewModel.searchedWallpapers.observe(this, Observer{
             searchAdapter.differ.submitList(it)
+
+            if(it.isNotEmpty()){
+                bind!!.initialLoader.visibility = View.GONE
+                bind!!.contentLayout.visibility = View.VISIBLE
+            }
+
+            bind!!.loadMoreSpinner.visibility = View.GONE
+            bind!!.loadMoreButton.visibility = View.VISIBLE
         })
     }
 
@@ -68,7 +77,18 @@ class SearchActivity : AppCompatActivity() {
                 // Handle the Enter key action here
                 if(!bind!!.searchBar.text.isNullOrEmpty() && !bind!!.searchBar.text.isNullOrBlank() &&
                     bind!!.searchBar.text.toString() != previousQuery) {
-                    viewModel.getSearchedWallpapers(bind!!.searchBar.text.toString(), 1, 50)
+
+                    viewModel.clearSearchResults()
+
+                    searchAdapter.differ.submitList(null) {
+                        searchAdapter.differ.submitList(emptyList())
+                    }
+
+                    bind!!.initialLoader.visibility = View.VISIBLE
+                    bind!!.contentLayout.visibility = View.GONE
+
+                    viewModel.getSearchedWallpapers(bind!!.searchBar.text.toString())
+
                     previousQuery = bind!!.searchBar.text.toString()
                 }
 
@@ -92,6 +112,13 @@ class SearchActivity : AppCompatActivity() {
 
         bind!!.cancelText.setOnClickListener {
             bind!!.searchBar.text = emptyEditable
+        }
+
+        bind!!.loadMoreButton.setOnClickListener {
+            bind!!.loadMoreButton.visibility = View.GONE
+            bind!!.loadMoreSpinner.visibility = View.VISIBLE
+
+            viewModel.getSearchedWallpapers(bind!!.searchBar.text.toString())
         }
     }
 

@@ -37,6 +37,7 @@ class RandomFragment : Fragment() {
 
         initializeRecyclerView()
         initializeViewModel()
+        setLoadMoreButton()
     }
 
     private fun initializeRecyclerView(){
@@ -52,8 +53,24 @@ class RandomFragment : Fragment() {
 
         viewModel = ViewModelProvider(this, ViewModelFactory(wallpaperRepository))[RandomViewModel::class.java]
         viewModel.randomWallpapers.observe(viewLifecycleOwner, Observer{
+            if(it.isNotEmpty()){
+                bind!!.initialLoader.visibility = View.GONE
+                bind!!.contentLayout.visibility = View.VISIBLE
+            }
             randomAdapter.differ.submitList(it)
+
+            bind!!.loadMoreSpinner.visibility = View.GONE
+            bind!!.loadMoreButton.visibility = View.VISIBLE
         })
+    }
+
+    private fun setLoadMoreButton(){
+        bind!!.loadMoreButton.setOnClickListener {
+            bind!!.loadMoreButton.visibility = View.GONE
+            bind!!.loadMoreSpinner.visibility = View.VISIBLE
+
+            viewModel.loadRandomWallpapers()
+        }
     }
 
     override fun onDestroyView() {

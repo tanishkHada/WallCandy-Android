@@ -10,7 +10,7 @@ data class Wallpaper(
     val id: Int,
     val liked: Boolean,
     val photographer: String,
-    val photographer_id: Int,
+    val photographer_id: Long,
     val photographer_url: String,
     val src: Src,
     val url: String,
@@ -23,7 +23,7 @@ data class Wallpaper(
         parcel.readInt(),
         parcel.readByte() != 0.toByte(),
         parcel.readString() ?: "",
-        parcel.readInt(),
+        parcel.readLong(),
         parcel.readString() ?: "",
         parcel.readParcelable(Src::class.java.classLoader) ?: Src.default(),
         parcel.readString() ?: "",
@@ -37,7 +37,7 @@ data class Wallpaper(
         parcel.writeInt(id)
         parcel.writeByte(if (liked) 1 else 0)
         parcel.writeString(photographer)
-        parcel.writeInt(photographer_id)
+        parcel.writeLong(photographer_id)
         parcel.writeString(photographer_url)
         parcel.writeParcelable(src, flags)
         parcel.writeString(url)

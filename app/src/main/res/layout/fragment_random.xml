@@ -6,17 +6,54 @@
     android:background="@color/bg"
     tools:context=".fragments.RandomFragment">
 
+    <!-- Initial fullscreen spinner -->
+    <ProgressBar
+        android:id="@+id/initialLoader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/turquoise"/>
+
+    <!-- Main content layout -->
     <LinearLayout
+        android:id="@+id/contentLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center">
+        android:visibility="gone">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/wallpaper_item"/>
-    </LinearLayout>
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="8dp"
+            tools:listitem="@layout/wallpaper_item" />
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/loadMoreButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_bold"
+                android:layout_gravity="center"
+                android:textSize="17sp"
+                android:text="LOAD MORE"
+                android:backgroundTint="@color/gradient_start2"
+                android:textColor="@color/white"/>
+
+            <ProgressBar
+                android:id="@+id/loadMoreSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:indeterminateTint="@color/turquoise"/>
+        </FrameLayout>
+    </LinearLayout>
 </FrameLayout>

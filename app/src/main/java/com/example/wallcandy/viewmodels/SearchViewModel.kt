@@ -9,12 +9,22 @@ import kotlinx.coroutines.launch
 
 class SearchViewModel(private val wallpaperRepository: WallpaperRepository) : ViewModel() {
 
+    private var currPage = 0
+    private val perPage = 15
+    private var nextLoading = false
+
     val searchedWallpapers: LiveData<List<Wallpaper>>
         get() = wallpaperRepository.searchedWallpapers
 
-    fun getSearchedWallpapers(query : String, page : Int, per_page : Int){
+    fun getSearchedWallpapers(query : String){
+        if(nextLoading){
+            return
+        }
+        currPage++
+        nextLoading = true
         viewModelScope.launch {
-            wallpaperRepository.getSearchedWallpapers(query, page, per_page)
+            wallpaperRepository.getSearchedWallpapers(query, currPage, perPage)
+            nextLoading = false
         }
     }
 

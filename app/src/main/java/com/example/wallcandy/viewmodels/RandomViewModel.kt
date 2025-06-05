@@ -9,14 +9,27 @@ import kotlinx.coroutines.launch
 
 class RandomViewModel(private val wallpaperRepository: WallpaperRepository) : ViewModel(){
 
+    private var currPage = 0
+    private val perPage = 15
+    private var nextLoading = false
+
     //fetch random wallpapers as soon as viewmodel object is created
     init{
-        viewModelScope.launch {
-            wallpaperRepository.getRandomWallpapers(1, 50)
-        }
+        loadRandomWallpapers()
     }
 
     val randomWallpapers : LiveData<List<Wallpaper>>
         get() = wallpaperRepository.randomWallpapers
 
+    fun loadRandomWallpapers(){
+        if(nextLoading){
+            return
+        }
+        currPage++
+        nextLoading = true
+        viewModelScope.launch {
+            wallpaperRepository.getRandomWallpapers(currPage, perPage)
+            nextLoading = false
+        }
+    }
 }
