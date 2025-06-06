@@ -48,7 +48,7 @@ A wallpaper application, built using Android Studio, which runs on **Android 9**
 
 
 
-| <img src="https://github.com/tanishkHada/WallCandy-Android/raw/main/Screenshots/sildeView.PNG" width="300"> | <img src="https://github.com/tanishkHada/WallCandy-Android/raw/main/Screenshots/options.PNG" width="300"> | 
+| <img src="https://github.com/tanishkHada/WallCandy-Android/raw/main/Screenshots/slideView.PNG" width="300"> | <img src="https://github.com/tanishkHada/WallCandy-Android/raw/main/Screenshots/options.PNG" width="300"> | 
 |      :--------:       |       :-------:       | 
 |    Slide view        |   Wallpaper options  |   
 
